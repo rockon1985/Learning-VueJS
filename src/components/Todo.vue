@@ -2,7 +2,7 @@
   <div>
     <div class="container">
       <h1>{{ title }}</h1>
-      <span>{{`${tasks.filter(i => i.completed).length} / ${tasks.length} Completed`}}</span>
+      <span>{{`${completedTasks} / ${totalTasks} Completed`}}</span>
       <ul>
         <form v-on:submit.prevent="addTask" class="add-task">
           <input type="text" name="task" placeholder="Add task">
@@ -34,6 +34,14 @@ export default {
       { id: 2, text: 'Learn Vue', completed: false },
       { id: 3, text: 'Build something awesome', completed: false }
     ]
+    }
+  },
+  computed: {
+    completedTasks: function () {
+      return this.tasks.filter(i => i.completed).length
+    },
+    totalTasks: function() {
+      return this.tasks.length
     }
   },
   components: {
