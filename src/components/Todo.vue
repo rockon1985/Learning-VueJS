@@ -4,10 +4,7 @@
       <h1>{{ title }}</h1>
       <span>{{`${completedTasks} / ${totalTasks} Completed`}}</span>
       <ul>
-        <form v-on:submit.prevent="addTask" class="add-task">
-          <input type="text" name="task" placeholder="Add task">
-          <button type="submit">Add</button>
-        </form>
+        <input type="text" class="add-task-input" v-on:keyup.enter="addTask" placeholder="Add new task">
         <ListItem
           v-for="task in tasks"
           v-bind:key = "task.id"
@@ -49,13 +46,12 @@ export default {
   },
   methods: {
     addTask: function (event) {
-      const text = event.target.elements.task.value
       this.tasks.push({
         id: this.tasks.length + 1,
-        text,
+        text: event.target.value,
         completed: false
       })
-      event.target.elements.task.value = ''
+      event.target.value = ''
     }
   }
 }
@@ -94,7 +90,7 @@ h3 {
   padding: 5px;
 }
 
-.add-task input {
+.add-task-input {
   margin-bottom: 15px;
   width: 70%;
   height: 22px;
