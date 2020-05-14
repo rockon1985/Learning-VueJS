@@ -9,6 +9,7 @@
           v-for="task in tasks"
           v-bind:key = "task.id"
           v-bind:task = "task"
+          v-on:remove-task="removeTask"
         ></ListItem>
       </ul>
     </div>
@@ -52,6 +53,10 @@ export default {
         completed: false
       })
       event.target.value = ''
+    },
+    removeTask: function(id) {
+      console.log('removing ', id)
+      this.tasks = this.tasks.filter(task => task.id !== id)
     }
   }
 }
