@@ -21,6 +21,7 @@
 
 <script>
 import ListItem from './ListItem.vue'
+import EmployeeService from '../services/EmployeeService'
 
 export default {
   name: 'Todo',
@@ -58,6 +59,11 @@ export default {
       console.log('removing ', id)
       this.tasks = this.tasks.filter(task => task.id !== id)
     }
+  },
+  mounted: function() {
+    EmployeeService.getAll()
+      .then(tasks => this.tasks = tasks)
+      .catch(console.error)
   }
 }
 </script>
