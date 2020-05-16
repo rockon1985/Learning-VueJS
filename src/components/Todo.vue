@@ -10,6 +10,7 @@
           v-bind:key = "task.id"
           v-bind:task = "task"
           v-on:remove-task="removeTask"
+          v-on:toggle-task="toggleTask"
         ></ListItem>
       </ul>
     </div>
@@ -21,19 +22,13 @@
 
 <script>
 import ListItem from './ListItem.vue'
-import EmployeeService from '../services/EmployeeService'
+import TodoService from '../services/TodoService'
 
 export default {
   name: 'Todo',
-  props: ['title', 'list'],
+  props: ['title'],
   data: function() {
-    return {
-      tasks: [
-      { id: 1, text: 'Learn JavaScript', completed: false },
-      { id: 2, text: 'Learn Vue', completed: false },
-      { id: 3, text: 'Build something awesome', completed: false }
-    ]
-    }
+    return { tasks: [] }
   },
   computed: {
     completedTasks: function () {
@@ -48,20 +43,29 @@ export default {
   },
   methods: {
     addTask: function (event) {
-      this.tasks.push({
-        id: this.tasks.length + 1,
-        text: event.target.value,
-        completed: false
-      })
+      TodoService.addNew({ text: event.target.value })
+        .then(({id, text, completed}) => {
+          this.tasks.push({ id, text, completed })
+        })
+        .catch(err => console.log('Error in adding task', err))      
       event.target.value = ''
     },
+    toggleTask: function(id) {
+      let task = this.tasks.find(task => task.id === id)
+      TodoService.updateById(id, { completed: !task.completed })
+        .then(() => task.completed = !task.completed)
+        .catch(err => console.log('Error in updating task', err))
+    },
     removeTask: function(id) {
-      console.log('removing ', id)
-      this.tasks = this.tasks.filter(task => task.id !== id)
+      TodoService.removeById(id)
+        .then(() => {
+          this.tasks = this.tasks.filter(task => task.id !== id)
+        })
+        .catch(err => console.log('Error in removing task', err))
     }
   },
   mounted: function() {
-    EmployeeService.getAll()
+    TodoService.getAll()
       .then(tasks => this.tasks = tasks)
       .catch(console.error)
   }

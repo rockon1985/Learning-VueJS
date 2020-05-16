@@ -1,6 +1,6 @@
 <template>
   <li>
-    <input type="checkbox" v-model="task.completed">
+    <input type="checkbox" v-on:click="$emit('toggle-task', task.id)">
     <span v-bind:class="{ done: task.completed }">{{task.text}}</span>
     <span class="remove" v-on:click="$emit('remove-task', task.id)">x</span>
   </li>
