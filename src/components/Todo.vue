@@ -42,37 +42,28 @@ export default {
     ListItem
   },
   methods: {
-    addTask: function (event) {
-      TodoService.addNew({ text: event.target.value })
-        .then(({id, text, completed}) => {
-          this.tasks.push({ id, text, completed })
-        })
-        .catch(err => console.log('Error in adding task', err))      
+    addTask: async function (event) {
+      const {id, text, completed} = await TodoService.addNew({ text: event.target.value })  
+      this.tasks.push({ id, text, completed })
       event.target.value = ''
     },
-    toggleTask: function(id) {
+    toggleTask: async function(id) {
       let task = this.tasks.find(task => task.id === id)
-      TodoService.updateById(id, { completed: !task.completed })
-        .then(() => task.completed = !task.completed)
-        .catch(err => console.log('Error in updating task', err))
+      await TodoService.updateById(id, { completed: !task.completed })
+      task.completed = !task.completed
     },
-    removeTask: function(id) {
-      TodoService.removeById(id)
-        .then(() => {
-          this.tasks = this.tasks.filter(task => task.id !== id)
-        })
-        .catch(err => console.log('Error in removing task', err))
+    removeTask: async function(id) {
+      await TodoService.removeById(id)
+      this.tasks = this.tasks.filter(task => task.id !== id)
     }
   },
-  mounted: function() {
-    TodoService.getAll()
-      .then(tasks => this.tasks = tasks)
-      .catch(console.error)
+  mounted: async function() {
+    const tasks = await TodoService.getAll()
+    this.tasks = tasks
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
   margin: 40px 0 0;
